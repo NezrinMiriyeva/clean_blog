@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Clean Blog - Start Bootstrap Theme</title>
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/clean-blog.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+{% comment %}{% if request.user.is_authenticated %}
+    <h1>{{ request.user }}</h1>
+{% else %}
+    <h1>{{ request.user }}</h1>
+{% endif %}{% endcomment %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home-page' %}">{{ common.brand }}</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                {% for menu in menu_list %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ menu.url }}">{{ menu.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Page Header -->
+{% block content %}
+    <header class="masthead" style="background-image: url({{ header.background_image.url }})">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h1>{{ header.main_title }}</h1>
+                        <span class="subheading">{{ header.sub_title }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {% for articles in article_list %}
+                    <div class="post-preview">
+                        <a href="{% url 'post' articles.id %}">
+                            <h2 class="post-title">
+                                {{ articles.name }}
+                            </h2>
+                            <h3 class="post-subtitle">
+                                {{ articles.sub_title }}
+                            </h3>
+                        </a>
+                        <p class="post-meta">Posted by
+                            <a href="#">{{ articles.author }}</a>
+                            {{ articles.publish_date }}</p>
+                    </div>
+                    <hr>
+                {% endfor %}
+
+                <!-- Pager -->
+                <div class="clearfix">
+                    <nav aria-label="Page navigation text-center mt-5" style="width: 100%;">
+                        <ul class="pagination" style="justify-content: center">
+                            {% if article_list.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ article_list.previous_page_number }}">Previous</a></li>
+                            {% endif %}
+                            {% for page in page_range %}
+                                {% if page == article_list.number %}
+                                    <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if article_list.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ article_list.next_page_number }}">Next</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+{% endblock %}
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <ul class="list-inline text-center">
+                    {% for footer in footer_list %}
+                        <li class="list-inline-item">
+                            <a href="{{ footer.link }}" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="{{ footer.icon }} fa-stack-1x fa-inverse"></i>
+                </span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="copyright text-muted">{{ common.copyright_text }}</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Custom scripts for this template -->
+<script src="{% static 'js/clean-blog.min.js' %}"></script>
+
+</body>
+
+</html>
