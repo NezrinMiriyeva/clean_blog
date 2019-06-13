@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url{% static 'img/adult-business-close-up.jpg' %}">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="page-heading">
+                        <h1>Qeydiyyat</h1>
+                        <span class="subheading"><a href="{% url 'login-page' %}" style="color:white;">Hesabin var? </a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form class="form-signin" method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in register_form %}
+                        <div class="control-group">
+                            <div class="form-group floating-label-form-group controls">
+                                <label>{{ field.label }}</label>
+                                {{ field|add_class:'form-control' }}
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <br>
+                    <button type="submit" class="btn btn-primary" id="sendMessageButton">Qeydiyyat et</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}

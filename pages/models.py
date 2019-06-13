@@ -41,7 +41,7 @@ class FooterIcon(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="profile/")
+    image = models.ImageField(upload_to="profile/", null=True, blank=True)
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
@@ -64,13 +64,6 @@ class Abouts(models.Model):
     background_image = models.ImageField(upload_to="about/")
 
 
-# class Post(models.Model):
-#     title = models.CharField(max_length=255)
-#     text = models.TextField()
-#     background_image = models.ImageField(upload_to="post/")
-#     author = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-#     publish_date = models.DateTimeField(auto_now=True)
-
 class Contact(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
@@ -85,3 +78,10 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+# class AuthorProfile(models.Model):
+#     article = models.ForeignKey(Articles, on_delete=models.CASCADE)
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return f"{self.article}"
