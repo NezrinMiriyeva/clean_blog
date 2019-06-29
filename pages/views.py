@@ -4,13 +4,11 @@ from django.contrib.auth import login, authenticate,logout
 from django.contrib import messages
 from django.http import HttpResponse
 from django.views import generic
-from .models import Articles
-# from .forms import Articleform
 from django.urls import reverse_lazy
 from .models import WebsiteCommon, HeaderSection, Menu, FooterIcon, Articles, Abouts, Contact
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import ContactForm, RegistrationUserForms
+from .forms import ContactForm, RegistrationUserForms, Articleform
 from .models import Profile
 
 
@@ -68,11 +66,12 @@ def contact(request):
             return redirect("home-page")
     return render(request, "contact.html", context)
 
-# #
-# def author_name(request,id):
-#     context = common_data()
-#     context["author"] = AuthorProfile.objects.filter(id=id).last()
-#     return render(request, "author.html", context)
+
+def author_name(request,id):
+    context = common_data()
+    context["author"] = Profile.objects.filter(id=id).last()
+    context["article_list"] = Articles.objects.all()
+    return render(request, "author.html", context)
 
 def login_page(request):
     if request.user.is_authenticated:
@@ -99,11 +98,6 @@ def login_view(request):
     else:
         return redirect("login-page")
 
-
-# def logout_view(request):
-#     logout(request)
-#     return redirect("login-page")
-
 def register(request):
     if request.method == "POST":
         form = RegistrationUserForms(request.POST, request.FILES)
@@ -129,26 +123,50 @@ def register(request):
 @login_required(login_url="/")
 def dashboard(request):
     context = common_data()
-    context["user_list"] = Profile.objects.all()
+    context["article_list"] = Articles.objects.filter(author__user=request.user)
     return render(request, "dashboard.html", context)
 
-# class HomePage(generic.TemplateView):
-#     template_name = "index.html"
-#
-#     def get_context_data(self, **kwargs):
-#         context = {}
-#         return context
-# #
-# class ArticleListView(generic.ListView):
-#     model = Articles
-#     template_name = "post.html"
-# #
-# class ArticleDetailView(generic.DetailView):
-#     model = Articles
-#     template_name = "article_detail.html"
-#
-# class ArticleUpdateView(generic.UpdateView):
-#     model = Articles
-#     template_name = "article_form.html"
-#     form_class = Articleform
-#     success_url = reverse_lazy("list_view")
+class ArticleUpdateView(generic.UpdateView):
+    model = Articles
+    template_name = "article_form.html"
+    form_class = Articleform
+    success_url = reverse_lazy("dashboard")
+
+    def get_queryset(self):
+        qs = super(ArticleUpdateView, self).get_queryset()
+        return qs.filter(author=self.request.user.profile)
+
+    def get_context_data(self, **kwargs):
+        context = super(ArticleUpdateView, self).get_context_data(**kwargs)
+        context = {**context, **common_data()}
+        return context
+
+class ArticleDeleteView(generic.DeleteView):
+    model = Articles
+    template_name = "article_delete.html"
+    success_url = reverse_lazy("dashboard")
+    
+    def get_queryset(self):
+        qs = super(ArticleDeleteView, self).get_queryset()
+        return qs.filter(author=self.request.user.profile)
+
+class ArticleCreateView(generic.CreateView):
+    model = Articles
+    form_class = Articleform
+    template_name = "article_create.html"
+    success_url = reverse_lazy("dashboard")
+    
+    def form_valid(self, form):
+        article = form.save(commit=False)
+        article.author = self.request.user.profile
+        article.save()
+        return super(ArticleCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ArticleCreateView, self).get_context_data(**kwargs)
+        context = {**context, **common_data()}
+        return context
+
+def logout_view(request):
+    logout(request)
+    return redirect("login-page")

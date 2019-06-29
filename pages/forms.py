@@ -6,11 +6,16 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-# class Articleform(forms.ModelForm):
-#
-#     class Meta:
-#         model = Articles
-#         fields = ["name","sub_title","content","author"]
+class Articleform(forms.ModelForm):
+    class Meta:
+        model = Articles
+        fields = ["name","sub_title","content"]
+
+        widgets = {
+            "name": forms.TextInput(attrs={'placeholder': 'Ad'}),
+            "sub_title": forms.TextInput(attrs={'placeholder': 'Basliq'}),
+            "content": forms.Textarea(attrs={'placeholder': 'Text'}),
+        }
 
 class RegistrationUserForms(forms.ModelForm):
     image = forms.ImageField(required=False)
@@ -29,7 +34,12 @@ class RegistrationUserForms(forms.ModelForm):
         }
 
         widgets = {
-            "first_name": forms.TextInput(attrs={'placeholder': 'Ad'})
+            "first_name": forms.TextInput(attrs={'placeholder': 'Ad'}),
+            "last_name": forms.TextInput(attrs={'placeholder': 'Soyad'}),
+            "email": forms.TextInput(attrs={'placeholder': 'Elektron poct'}),
+            "username": forms.TextInput(attrs={'placeholder': 'Istifadeci adi'}),
+            "password": forms.PasswordInput(attrs={'placeholder': 'Sifre'})
+
         }
 
 class LoginForm(forms.Form):
@@ -68,3 +78,5 @@ class ContactForm(forms.ModelForm):
             "phone_number": "Telefon",
             "message": "mesaj"
         }
+
+# class UpdateForm(forms.ModelForm):

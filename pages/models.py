@@ -53,9 +53,16 @@ class Articles(models.Model):
     content = RichTextUploadingField(null=True, blank=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     publish_date = models.DateTimeField(auto_now=True)
+    background_image = models.ImageField(upload_to="article/", null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
+
+    def get_image(self):
+        if self.background_image:
+            return self.background_image.url
+        else:
+            return ""
 
 class Abouts(models.Model):
     sub_title = models.CharField(max_length=255)
@@ -79,9 +86,3 @@ class ContactUs(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-# class AuthorProfile(models.Model):
-#     article = models.ForeignKey(Articles, on_delete=models.CASCADE)
-#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return f"{self.article}"
