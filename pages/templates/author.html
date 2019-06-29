@@ -9,7 +9,7 @@
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="site-heading">
               <img style="width: 200px; border-radius: 20px;" src="{{ profile.image.url }}">
-              <h1>Nazrin Miriyeva</h1>
+              <h1>{{ profile.user.get.full_name }}</h1>
               <span class="subheading">Python/ Developer</span>
             </div>
           </div>
@@ -32,8 +32,8 @@
                             </h3>
                         </a>
                         <p class="post-meta">Posted by
-                            <a href="#">Matrix Blog</a>
-                            on September 24, 2018</p>
+                            <a href="#">{{ articles.author }}</a>
+                            {{ articles.publish_date }}</p>
                     </div>
                     <hr>
                 {% endfor %}

@@ -69,8 +69,8 @@ def contact(request):
 
 def author_name(request,id):
     context = common_data()
-    context["author"] = Profile.objects.filter(id=id).last()
-    context["article_list"] = Articles.objects.all()
+    context["profile"] = Profile.objects.filter(id=id).last()
+    context["article_list"] = Articles.objects.filter(author_id = id)
     return render(request, "author.html", context)
 
 def login_page(request):

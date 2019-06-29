@@ -55,6 +55,9 @@ class Articles(models.Model):
     publish_date = models.DateTimeField(auto_now=True)
     background_image = models.ImageField(upload_to="article/", null=True, blank=True)
 
+    class Meta:
+        ordering = ["-id"]
+
     def __str__(self):
         return "{}".format(self.name)
 

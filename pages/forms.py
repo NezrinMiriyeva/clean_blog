@@ -9,7 +9,7 @@ User = get_user_model()
 class Articleform(forms.ModelForm):
     class Meta:
         model = Articles
-        fields = ["name","sub_title","content"]
+        fields = ["name","background_image","sub_title","content"]
 
         widgets = {
             "name": forms.TextInput(attrs={'placeholder': 'Ad'}),
