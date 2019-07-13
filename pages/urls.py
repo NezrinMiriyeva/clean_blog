@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import index, about, post_detail_view, contact
 from .views import login_page, login_view, register, dashboard, ArticleUpdateView, ArticleDeleteView, ArticleCreateView
-from .views import author_name, logout_view
+from .views import author_name, logout_view, UserSettings
 
 urlpatterns = [
      path("", index, name= "home-page"),
@@ -16,6 +16,7 @@ urlpatterns = [
      path('article/<int:pk>/delete/', ArticleDeleteView.as_view(), name="delete_view"),
      path('article/new', ArticleCreateView.as_view(), name="create_view"),
      path("author/<int:id>/", author_name, name="author"),
-    path("logout/", logout_view, name="logout"),
+     path("settings/", UserSettings.as_view(), name="user-settings"),
+     path("logout/", logout_view, name="logout"),
 
 ]

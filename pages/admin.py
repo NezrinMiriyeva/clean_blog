@@ -17,9 +17,11 @@ admin.site.register(Menu,MenuAdmin)
 admin.site.register(FooterIcon)
 admin.site.register(Articles,ArticleAdmin)
 admin.site.register(Abouts)
-# admin.site.register(Author)
+admin.site.register(Login)
 admin.site.register(Contact)
 admin.site.register(ContactUs)
+admin.site.register(Settings)
+
 
 
 # Register your models here.

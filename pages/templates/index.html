@@ -54,13 +54,13 @@
                                         <img style="width: 50px;" src="{{ request.user.profile.image.url }}">
                                     </div>
                                     <div class="user-text">
-                                        <p>Nazrin Miriyeva</p>
+                                        <p>{{ request.user.get_full_name }}</p>
                                     </div>
                                 </div>
                                 <ul class="dropdown-menu">
                                     <li><a href="{% url 'dashboard' %}">Lövhə</a></li>
                                     <li><a href="{% url 'author' user.id %}">Məqalələrim</a></li>
-                                    <li><a href="#">Tənzimləmələr</a></li>
+                                    <li><a href="{% url 'user-settings' %}">Tənzimləmələr</a></li>
                                     <li><a href="{% url 'logout' %}">Çıxış</a></li>
                                 </ul>
                             </div>
@@ -109,7 +109,7 @@
                             </h3>
                         </a>
                         <p class="post-meta">Posted by
-                            <a href="#">{{ articles.author }}</a>
+                            <a href="{%  url 'author' articles.author.id %}">{{ articles.author }}</a>
                             {{ articles.publish_date }}</p>
                     </div>
                     <hr>

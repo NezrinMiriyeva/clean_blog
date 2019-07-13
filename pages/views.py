@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm
+from django.utils.decorators import method_decorator
+
+from .forms import LoginForm, UserSettingsForm
 from django.contrib.auth import login, authenticate,logout
 from django.contrib import messages
 from django.http import HttpResponse
@@ -9,7 +11,7 @@ from .models import WebsiteCommon, HeaderSection, Menu, FooterIcon, Articles, Ab
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .forms import ContactForm, RegistrationUserForms, Articleform
-from .models import Profile
+from .models import Profile,Settings
 
 
 def common_data():
@@ -70,7 +72,16 @@ def contact(request):
 def author_name(request,id):
     context = common_data()
     context["profile"] = Profile.objects.filter(id=id).last()
-    context["article_list"] = Articles.objects.filter(author_id = id)
+    all_object = Articles.objects.filter(author_id = id)
+    paginator = Paginator(all_object, 5)
+    page = 1
+    if request.GET.get("page"):
+        context["article_list"] = paginator.get_page(request.GET.get("page"))
+    else:
+        context["article_list"] = paginator.get_page(1)
+    context["page_range"] = list(paginator.page_range)[0 if page < 5 else page - 5:page + 5]
+
+    context["pagination"] = paginator
     return render(request, "author.html", context)
 
 def login_page(request):
@@ -170,3 +181,46 @@ class ArticleCreateView(generic.CreateView):
 def logout_view(request):
     logout(request)
     return redirect("login-page")
+
+class UserSettings(generic.FormView):
+    form_class = UserSettingsForm
+    template_name = "user-settings.html"
+    success_url = "/"
+
+    def get_form_kwargs(self):
+        """Return the keyword arguments for instantiating the form."""
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+            'instance': self.request.user
+        }
+
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
+
+    def form_valid(self, form):
+        if self.request.user.check_password(self.request.POST.get("password")):
+            form.instance = self.request.user
+            form.save()
+            return super(UserSettings, self).form_valid(form)
+        else:
+            return HttpResponse("not")
+
+    def form_invalid(self,form):
+        a = 2
+        return super(UserSettings, self).form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(UserSettings,self).get_context_data(**kwargs)
+        if self.request.method == "GET":
+            context["settings"] = Settings.objects.last()
+            context["form"] = UserSettingsForm(instance=self.request.user)
+        return context
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserSettings, self).dispatch(request)

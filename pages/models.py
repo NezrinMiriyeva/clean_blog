@@ -42,6 +42,19 @@ class FooterIcon(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="profile/", null=True, blank=True)
+    background_image = models.ImageField(upload_to="profile/", null=True, blank=True)
+
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return ""
+
+    def get_background_image(self):
+        if self.background_image:
+            return self.background_image.url
+        else:
+            return ""
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
@@ -89,3 +102,14 @@ class ContactUs(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+class Login(models.Model):
+    background_image = models.ImageField(upload_to="login/", null=True, blank=True)
+
+class Settings(models.Model):
+    background_image = models.ImageField(upload_to="settings/", null=True, blank=True)
+
+    def get_image(self):
+        if self.background_image:
+            return self.background_image.url
+        else:
+            return ""
